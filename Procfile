@@ -1,1 +1,2 @@
-web: python app.py 32258
+web: gunicorn --bind 0.0.0.0:32258 app:app
+
