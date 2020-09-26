@@ -112,4 +112,5 @@ def my_form_post():
     # print("repositories of organization ====>", r.json())
     # return jsonify(r.json())
 
-app.run()
+if __name__ == '__main__':
+    app.run(debug=True)
