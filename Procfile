@@ -1,1 +1,2 @@
-web: python app.py 32258
+web: gunicorn wsgi:app
+heroku ps:scale web=1
