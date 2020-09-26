@@ -17,7 +17,7 @@ app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
 
-@app.route('/', methods=['GET'])
+@app.route('/help', methods=['GET'])
 def home():
     # query_url = "https://api.github.com/repos/github/platform-samples/pulls?state=close"
     query_url = "https://api.github.com/repos/projetcongo/demoapp/pulls?state=close"
@@ -67,7 +67,7 @@ def home():
 def getinfo():
     return render_template('my-form.html')
 
-@app.route('/get_metric')
+@app.route('/')
 def getmetric():
     return render_template('metric.html')
 
