@@ -85,6 +85,7 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.20
 pydruid==0.3.1
+PyGithub==1.53
 PyHamcrest==2.0.2
 PyHive==0.4.0
 pymongo==3.10.1
