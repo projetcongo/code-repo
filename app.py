@@ -18,7 +18,7 @@ app.config["DEBUG"] = True
 #download git hub analysis file of my repo
 @app.route('/public_repo_download', methods=['GET'])
 def public_repo_download():
-    txtfile = 'githubanalysis.txt'
+    txtfile = 'publicgithubanalysis.txt'
     print("Saved commits information to commits_info.csv")
     return send_file(txtfile, as_attachment=True, cache_timeout=0)
 
