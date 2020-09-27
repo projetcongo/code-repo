@@ -302,7 +302,7 @@ h1, h2, h3, h4, h5, h6, strong {
       <div class="content-area">
         <div class="container-fluid">
           <div class="main">
-            <h2 style="text-align:center"> <u>Repo Details for - https://github.com/projetcongo/demoapp</u></h2><br><br>
+            <h2 style="text-align:center"> <u>Repo Details for - https://api.github.com/repos/github/platform-samples/</u></h2><br><br>
 
             <div class="row sparkboxes mt-4 mb-4">
               <div class="col-md-4">
@@ -316,17 +316,19 @@ h1, h2, h3, h4, h5, h6, strong {
                 <h3 style="text-align: center"> Pull request by users</h3>
                 <div class="box box1" style="background-color:#fff; width:auto"><br>
                   <h4>Click here to get metrics</h4><br><br>
-                  <button class="btn btn-primary"  type="submit"><a href="/my_repo_download"><span style="color:#fff">Download</span></a></button><br><br>
+                    <button class="btn btn-primary"  type="submit"><a href="/public_repo_download"><span style="color:#fff">Download</span></a></button><br><br>
                   <span>After clicking, you will directly download the file</span>
                   <br><br>
 
                 </div>
               </div>
             </div>
+
               <div class="col-md-12">
                 <div class="box box3" style="text-allign:center">
                   <div class="row">
                     <div class="col-md-4" style="text-align: center">
+
                    <p > commits done by users</p>
                     <h4 id="spark3"></h4>
                     </div>
@@ -338,8 +340,11 @@ h1, h2, h3, h4, h5, h6, strong {
                   <p style="text-align: center"> Avg time active - pull req (open to close) </p>
                     <h4 id="spark5"></h4>
                     </div>
+
                   </div>
+
                 </div>
+                   <p style="color:red; font-size:12px;float: right;">Only 30 dynamic use cases used</p>
               </div>
             </div>
             <div class="row mt-4 mb-4">
@@ -375,7 +380,7 @@ h1, h2, h3, h4, h5, h6, strong {
 
         $.ajax({
           type: "GET",
-          url: "/get_pull_info",
+          url: "/get_pull_info_public",
           data: 'test',
           cache: false,
           success: function(data){

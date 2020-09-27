@@ -1,6 +1,6 @@
 import flask
 from github import Github
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, send_file
 from jinja2 import Template
 import requests
 import pandas as pd
@@ -17,16 +17,37 @@ app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
 
-@app.route('/help', methods=['GET'])
-def home():
-    # query_url = "https://api.github.com/repos/github/platform-samples/pulls?state=close"
-    query_url = "https://api.github.com/repos/projetcongo/demoapp/pulls?state=close"
+@app.route('/public_repo_download', methods=['GET'])
+def public_repo_download():
+    txtfile = 'githubanalysis.txt'
+    print("Saved commits information to commits_info.csv")
+    return send_file(txtfile, as_attachment=True, cache_timeout=0)
+
+
+@app.route('/my_repo_download', methods=['GET'])
+def my_repo_download():
+    txtfile = 'githubanalysis.txt'
+    print("Saved commits information to commits_info.csv")
+    return send_file(txtfile, as_attachment=True, cache_timeout=0)
+
+@app.route('/')
+def getmetric():
+    return render_template('metric.html')
+
+@app.route('/public_metric')
+def public_metric():
+    return render_template('public_metric.html')
+
+@app.route('/get_pull_info')
+def getpullinfo():
+    query_url = "https://api.github.com/repos/projetcongo/demoapp/"
     headers = {'Authorization': 'token ' + mytoken,
                'Accept': 'application/vnd.github.v3+json'}
-    r = requests.get(query_url, headers=headers, data={})
-    # data = requests.get('https://api.github.com/users/' + credentials['username'], auth=authentication)
-    data = r.json()
-    print("length===>",len(data))
+    pulldata = requests.get(query_url+"pulls?state=all", headers=headers, data={})
+    comitdata = requests.get(query_url+"commits", headers=headers, data={})
+    issue_data = requests.get(query_url+"issues", headers=headers, data={})
+    issue_close = requests.get(query_url+"pulls?state=close", headers=headers, data={})
+    data = issue_close.json()
 
     df = pd.DataFrame(data)
     # print(df)
@@ -34,83 +55,97 @@ def home():
     df['created_at'] = df['created_at'].map(dateutil.parser.parse)
     df['tdiff'] = df['closed_at'] - df['created_at']
     # print(df)
-
+    use_cols = ['created_at', 'closed_at', 'tdiff']
     mean = str(df['tdiff'].mean())
-
-    df.to_csv('commits_info.csv', index=False)
-    use_cols = ['created_at','closed_at','tdiff']
-
-    query_url = "https://api.github.com/repos/projetcongo/demoapp/issues"
-    headers = {'Authorization': 'token ' + mytoken, 'Accept': 'application/vnd.github.v3+json'}
-    issue_data = requests.get(query_url, headers=headers, data={})
-
-    print("issues of organization ====>", issue_data.json())
-
-
-    with open('filename.txt', 'w') as outfile:
+    with open('githubanalysis.txt', 'w') as outfile:
         outfile.write('@ Repo details: \n')
+
+        outfile.write('Date ranges from start date to close date for each pull request' )
+        outfile.write('\n' )
+        outfile.write('\n' )
+
         df.to_string(outfile, columns=use_cols, col_space=10)
+
         outfile.write('\n' )
         outfile.write('\n' )
         outfile.write('@ Average time being active between open and close states: '  + mean)
 
+        outfile.write('\n')
+        outfile.write('\n')
+        outfile.write('\n')
+        outfile.write('\n')
+        outfile.write('No of User pull request close: '+ str(len(data)))
 
-        # np.savetxt(filename, text)
-        # outfile.write(text.encode())
-        # outfile.write(("\n").encode())
-    # df.to_csv('filename.txt', mode='w', columns=['created_at','closed_at','tdiff'], index=False)
+        outfile.write('\n')
+        outfile.write('\n')
+        outfile.write('\n')
+        outfile.write('No of Users: '+ str(len(pulldata.json())))
 
-    print("Saved commits information to commits_info.csv")
-    return "success"
 
-@app.route('/get_info')
-def getinfo():
-    return render_template('my-form.html')
 
-@app.route('/')
-def getmetric():
-    return render_template('metric.html')
 
-@app.route('/get_commit_info')
-def getcommitinfo():
-    query_url = "https://api.github.com/repos/projetcongo/demoapp/commits"
+
+
+    # mydictionary.append(comitdata)
+    data = []
+    data.append({"pull_data": pulldata.json()})
+    data.append({"comit_data": comitdata.json()})
+    data.append({"issue_data": issue_data.json()})
+    data.append({"metric": [{"avg_time": mean}]})
+    print(data)
+    return json.dumps(data)
+
+@app.route('/get_pull_info_public')
+def get_pull_info_public():
+    query_url = "https://api.github.com/repos/github/platform-samples/"
     headers = {'Authorization': 'token ' + mytoken,
                'Accept': 'application/vnd.github.v3+json'}
-    r = requests.get(query_url, headers=headers, data={})
+    pulldata = requests.get(query_url+"pulls?state=all", headers=headers, data={})
+    comitdata = requests.get(query_url+"commits", headers=headers, data={})
+    issue_data = requests.get(query_url+"issues", headers=headers, data={})
+    issue_close = requests.get(query_url+"pulls?state=close", headers=headers, data={})
+    data = issue_close.json()
 
-    print(r.json())
-    print(len(r.json()))
-    return jsonify(r.json())
+    df = pd.DataFrame(data)
+    # print(df)
+    df['closed_at'] = df['closed_at'].map(dateutil.parser.parse)
+    df['created_at'] = df['created_at'].map(dateutil.parser.parse)
+    df['tdiff'] = df['closed_at'] - df['created_at']
+    # print(df)
+    use_cols = ['created_at', 'closed_at', 'tdiff']
+    mean = str(df['tdiff'].mean())
+    with open('publicgithubanalysis.txt', 'w') as outfile:
+        outfile.write('@ Repo details: \n')
 
-@app.route('/get_pull_info')
-def getpullinfo():
-    query_url = "https://api.github.com/repos/projetcongo/demoapp/pulls?state=all"
-    headers = {'Authorization': 'token ' + mytoken,
-               'Accept': 'application/vnd.github.v3+json'}
-    r = requests.get(query_url, headers=headers, data={})
-    print(r.json())
-    print(len(r.json()))
-    return jsonify(r.json())
+        outfile.write('Date ranges from start date to close date for each pull request' )
+        outfile.write('\n' )
+        outfile.write('\n' )
 
-@app.route('/test', methods=['POST'])
-def my_form_post():
-    text = request.form['text']
-    processed_text = text.upper()
-    # https://api.github.com//orgs/:org/repos
-    query_url = "https://api.github.com/orgs/projetcongo/repos"
-    headers = {'Authorization': 'token ' + mytoken, 'Accept': 'application/vnd.github.v3+json'}
-    r = requests.get(query_url, headers=headers, data={})
-    data1 = r.json()
-    df = pd.DataFrame(data1)
-    columns = ['id','Name', 'Full name','Is this Private', 'Projects', 'Created date']  # for a dynamically created table
+        df.to_string(outfile, columns=use_cols, col_space=10)
 
-    table_d = df.to_json(orient='index')
-    # table_d = {"0":{"abc":20, "def":90}}
-    print(data1)
-    return render_template('display.html', columns=columns,
-                           table_data=json.loads(table_d))
-    # print("repositories of organization ====>", r.json())
-    # return jsonify(r.json())
+        outfile.write('\n' )
+        outfile.write('\n' )
+        outfile.write('@ Average time being active between open and close states: '  + mean)
+
+        outfile.write('\n')
+        outfile.write('\n')
+        outfile.write('\n')
+        outfile.write('\n')
+        outfile.write('No of User pull request close: '+ str(len(data)))
+
+        outfile.write('\n')
+        outfile.write('\n')
+        outfile.write('\n')
+        outfile.write('No of Users: '+ str(len(pulldata.json())))
+
+    # mydictionary.append(comitdata)
+    data = []
+    data.append({"pull_data": pulldata.json()})
+    data.append({"comit_data": comitdata.json()})
+    data.append({"issue_data": issue_data.json()})
+    data.append({"metric": [{"avg_time": mean}]})
+    print(data)
+    return json.dumps(data)
 
 if __name__ == '__main__':
     app.run(debug=True)
