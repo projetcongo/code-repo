@@ -80,12 +80,13 @@ def getpullinfo():
         outfile.write('\n')
         outfile.write('\n')
         outfile.write('\n')
-        outfile.write('No of User pull request close: '+ str(len(data)))
+        outfile.write('No of User pull request close: ' + str(len(data)) + "  out of total pull requests:  " + str(len(pulldata.json())))
 
         outfile.write('\n')
         outfile.write('\n')
         outfile.write('\n')
-        outfile.write('No of Users: '+ str(len(pulldata.json())))
+        outfile.write('\n')
+        outfile.write('No of Users commited: '+ str(len(comitdata.json())))
 
     data = []
     data.append({"pull_data": pulldata.json()})
@@ -129,12 +130,13 @@ def get_pull_info_public():
         outfile.write('\n')
         outfile.write('\n')
         outfile.write('\n')
-        outfile.write('No of User pull request close: '+ str(len(data)))
+        outfile.write('No of User pull request close: '+ str(len(data)) + " out of total pull requests:  "+ str(len(pulldata.json())))
 
         outfile.write('\n')
         outfile.write('\n')
         outfile.write('\n')
-        outfile.write('No of Users: '+ str(len(pulldata.json())))
+        outfile.write('\n')
+        outfile.write('No of Users commited: '+ str(len(comitdata.json())))
 
     data = []
     data.append({"pull_data": pulldata.json()})

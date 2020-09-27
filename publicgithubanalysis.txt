@@ -37,7 +37,8 @@ Date ranges from start date to close date for each pull request
 
 
 
-No of User pull request close: 30
+No of User pull request close: 30 out of total pull requests:  30
 
 
-No of Users: 30
+
+No of Users commited: 30

@@ -11,7 +11,8 @@ Date ranges from start date to close date for each pull request
 
 
 
-No of User pull request close: 4
+No of User pull request close: 4  out of total pull requests:  5
 
 
-No of Users: 5
+
+No of Users commited: 5
