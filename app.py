@@ -9,8 +9,8 @@ import dateutil.parser
 import json
 
 # using an access token
-g = Github("93e27cd53dd1f8f4ba1ce9b120dfa62f8892fa3b")
-mytoken = "93e27cd53dd1f8f4ba1ce9b120dfa62f8892fa3b"
+g = Github("93e27cd53dd1f8f4ba13b")
+mytoken = "93e27cd53dd1f88892fa3b"
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
